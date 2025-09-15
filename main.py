@@ -62,8 +62,14 @@ if page == "Tela Principal":
         # Converte a coluna de horário para datetime
         meds_df['Horario'] = pd.to_datetime(meds_df['Horario'])
 
-        # Filtra medicamentos pendentes
-        pending_meds = meds_df[meds_df['Status'] == 'Pendente'].sort_values(by='Horario')
+        # Obter data e hora atual
+        now = datetime.now()
+
+        # Filtra medicamentos pendentes que ainda não venceram (data/hora futura)
+        pending_meds = meds_df[
+            (meds_df['Status'] == 'Pendente') & 
+            (meds_df['Horario'] > now)
+        ].sort_values(by='Horario')
 
         if not pending_meds.empty:
             next_med = pending_meds.iloc[0]
@@ -77,7 +83,7 @@ if page == "Tela Principal":
             st.subheader("Lista de Próximos Medicamentos")
             st.dataframe(pending_meds[['Usuario', 'Medicamento', 'Horario']].rename(columns={'Usuario': 'Paciente', 'Medicamento': 'Remédio', 'Horario': 'Data e Hora'}), use_container_width=True)
         else:
-            st.success("Todos os medicamentos já foram administrados!")
+            st.info("Não há medicamentos pendentes com horários futuros.")
 
 elif page == "Cadastrar Usuário":
     st.header("Cadastrar Novo Usuário")
