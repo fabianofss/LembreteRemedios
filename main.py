@@ -34,9 +34,8 @@ def add_user(name):
     """Adiciona um novo usuário na planilha."""
     users_sheet.append_row([name])
 
-def add_med(user, med_name, interval, doses):
+def add_med(user, med_name, interval, doses, start_time):
     """Adiciona um novo medicamento na planilha."""
-    start_time = datetime.now()
     for i in range(int(doses)):
         dose_time = start_time + timedelta(hours=int(interval) * i)
         meds_sheet.append_row([user, med_name, dose_time.strftime("%Y-%m-%d %H:%M:%S"), "Pendente"])
@@ -107,11 +106,20 @@ elif page == "Cadastrar Medicamento":
             med_name = st.text_input("Nome do Medicamento")
             interval = st.number_input("Intervalo entre as doses (em horas)", min_value=1, step=1)
             doses = st.number_input("Quantidade de doses", min_value=1, step=1)
+            
+            # Campos para data e hora da primeira dose
+            col1, col2 = st.columns(2)
+            with col1:
+                start_date = st.date_input("Data da primeira dose", value=datetime.now().date())
+            with col2:
+                start_time = st.time_input("Horário da primeira dose", value=datetime.now().time())
 
             submitted = st.form_submit_button("Cadastrar Medicamento")
             if submitted:
-                if selected_user and med_name and interval and doses:
-                    add_med(selected_user, med_name, interval, doses)
-                    st.success(f"Medicamento '{med_name}' cadastrado para '{selected_user}' com sucesso!")
+                if selected_user and med_name and interval and doses and start_date and start_time:
+                    # Combina data e hora em um objeto datetime
+                    start_datetime = datetime.combine(start_date, start_time)
+                    add_med(selected_user, med_name, interval, doses, start_datetime)
+                    st.success(f"Medicamento '{med_name}' cadastrado para '{selected_user}' com primeira dose em {start_datetime.strftime('%d/%m/%Y às %H:%M')}!")
                 else:
                     st.error("Por favor, preencha todos os campos.")
