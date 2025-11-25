@@ -1,5 +1,5 @@
-streamlit
-gspread
-oauth2client
-pandas
-st-gsheets-connection
+streamlit # É a biblioteca principal que transforma seu script Python em uma aplicação web interativa.
+gspread # Biblioteca para interagir com o Google Sheets.
+oauth2client # Biblioteca para autenticação OAuth2, necessária para acessar o Google Sheets.
+pandas # Biblioteca para manipulação e análise de dados.
+st-gsheets-connection # Biblioteca para facilitar a conexão entre Streamlit e Google Sheets.
